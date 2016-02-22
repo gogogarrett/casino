@@ -26,10 +26,10 @@ defmodule GameManager.Start do
 
       # hack to give players each their own info
       case x do
-        1 -> GameManager.Player.Player.add_player_info(x, %{id: 1, name: "Bill"})
-        2 -> GameManager.Player.Player.add_player_info(x, %{id: 2, name: "Jill"})
-        3 -> GameManager.Player.Player.add_player_info(x, %{id: 3, name: "Bob"})
-        _ -> GameManager.Player.Player.add_player_info(x, %{id: 4, name: "Carl"})
+        1 -> GameManager.Player.Player.add_player_info(x, %{id: 1, name: "Garrett"})
+        2 -> GameManager.Player.Player.add_player_info(x, %{id: 2, name: "Bob"})
+        3 -> GameManager.Player.Player.add_player_info(x, %{id: 3, name: "Phil"})
+        4 -> GameManager.Player.Player.add_player_info(x, %{id: 4, name: "Nay"})
       end
 
       # Fetch the player info
