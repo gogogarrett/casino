@@ -1,4 +1,6 @@
 defmodule GameManager.Player.Player do
+  alias TableManager.Table.{Dealer, Hand}
+
   # Client Api
   def add_player_info(player_id, info) do
     GenServer.cast(player_id(player_id), {:add_info, info})
@@ -26,15 +28,15 @@ defmodule GameManager.Player.Player do
   end
 
   def handle_call(:hit, _from, state) do
-    card = TableManager.Table.Deck.hit(state.table_id)
+    card = Dealer.hit(state.table_id)
 
     new_cards = case Map.get(state, :cards) do
       nil -> [card]
       cards -> [card] ++ state.cards
     end
 
-    hand = %TableManager.Table.Deck.Hand{cards: new_cards}
-    count = TableManager.Table.Deck.Hand.count(hand)
+    hand = %Hand{cards: new_cards}
+    count = Hand.count(hand)
 
     hit_info = %{
       new_card: card,

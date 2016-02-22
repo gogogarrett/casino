@@ -10,7 +10,7 @@ defmodule TableManager.Table.Supervisor do
   end
 
   def init(:ok) do
-    children = [worker(TableManager.Table.Deck, [])]
+    children = [worker(TableManager.Table.Dealer, [])]
 
     supervise(children, strategy: :simple_one_for_one)
   end
