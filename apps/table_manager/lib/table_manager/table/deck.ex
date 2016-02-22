@@ -1,14 +1,49 @@
 defmodule TableManager.Table.Deck do
   defmodule Card do
     defstruct suit: nil, rank: nil
+
+    def value(%TableManager.Table.Deck.Card{suit: _suit, rank: rank} = card)
+        when rank in ["2", "3", "4", "5", "6", "7", "8", "9", "10"] do
+      String.to_integer(rank)
+    end
+    def value(%TableManager.Table.Deck.Card{suit: _suit, rank: rank} = card)
+        when rank in ["J", "Q", "K"] do
+      10
+    end
+    def value(%TableManager.Table.Deck.Card{suit: _suit, rank: rank} = card)
+        when rank == "A" do
+      [1, 11]
+    end
   end
 
-  defmodule Deck do
+  defmodule DeckBuilder do
     @suit ~w[H C D S]
     @rank ~w[A 2 3 4 5 6 7 8 9 10 J Q K]
 
     def new do
       for r <- @rank, s <- @suit, do: %Card{suit: s, rank: r}
+    end
+  end
+
+  defmodule Hand do
+    defstruct cards: []
+
+    def count(%Hand{cards: cards} = hand, take_low \\ true) do
+      Enum.reduce(cards, 0, fn(card, acc) ->
+        case TableManager.Table.Deck.Card.value(card) do
+          [low, high] -> count_ace(acc, low, high, take_low)
+          number      -> acc + number
+          _           -> acc
+        end
+      end)
+    end
+
+    defp count_ace(acc, low, high, take_low) do
+      if take_low do
+        acc + low
+      else
+        acc + high
+      end
     end
   end
 
@@ -32,7 +67,7 @@ defmodule TableManager.Table.Deck do
 
   def init(:ok) do
     :timer.send_after(1_000, :shuffle)
-    {:ok, Deck.new}
+    {:ok, DeckBuilder.new}
   end
 
   def handle_info(:shuffle, deck), do: {:noreply, Enum.shuffle(deck)}
