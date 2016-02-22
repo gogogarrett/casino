@@ -33,12 +33,19 @@ defmodule GameManager.Player.Player do
       cards -> [card] ++ state.cards
     end
 
-    {:reply, card, %{state | cards: List.flatten(new_cards)}}
+    hand = %TableManager.Table.Deck.Hand{cards: new_cards}
+    count = TableManager.Table.Deck.Hand.count(hand)
+
+    hit_info = %{
+      new_card: card,
+      hand_count: count,
+      hand: hand
+    }
+
+    {:reply, hit_info, %{state | cards: List.flatten(new_cards)}}
   end
 
   def handle_call(:stay, _from, state) do
-    # Not implemented yet
-    # this will delegate responsibility to the state machine
     {:reply, GameManager.Table.StateMachine.next_player(state.table_id), state}
   end
 
